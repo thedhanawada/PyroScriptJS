@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Fireworks Demo</title>
+    <title>PyroScript Playground</title>
     <style>
         body, html {
             width: 100%;
@@ -22,12 +22,18 @@
         #description {
             z-index: 1;
             position: absolute;
-            top: 20px;
-            left: 20px;
-            right: 20px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
         }
         #description h1, #description p {
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        #description p {
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
         }
         #startStopButton {
             padding: 10px 20px;
@@ -39,6 +45,7 @@
             font-weight: bold;
             cursor: pointer;
             transition: background 0.3s ease;
+            margin-top: 20px;
         }
         #startStopButton:hover {
             background: #eee;
@@ -48,21 +55,21 @@
 <body>
     <canvas id="fireworksCanvas"></canvas>
     <div id="description">
-        <h1>Welcome to the FireworksJS Demo!</h1>
-        <p>Move your mouse around the screen to create fireworks. Press the button below to start or stop the fireworks.</p>
+        <h1>Welcome to PyroScript Playground!</h1>
+        <p>PyroScript is a fun and interactive JavaScript library that creates beautiful fireworks animations on your webpage. Move your mouse around the screen to create fireworks, and click the button below to start or stop the show.</p>
         <button id="startStopButton">Start</button>
     </div>
-    <script src="Fireworks.js"></script>
+    <script src="PyroScript.js"></script>
     <script>
-        var fireworks = new Fireworks('fireworksCanvas');
+        var pyro = new PyroScript('fireworksCanvas');
 
         var startStopButton = document.getElementById('startStopButton');
         startStopButton.addEventListener('click', function() {
             if (this.textContent === 'Start') {
-                fireworks.start();
+                pyro.start();
                 this.textContent = 'Stop';
             } else {
-                fireworks.stop();
+                pyro.stop();
                 this.textContent = 'Start';
             }
         });
