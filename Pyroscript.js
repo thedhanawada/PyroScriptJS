@@ -1,21 +1,40 @@
 (function(global) {
-  function PyroScript(canvasId) {
+  function PyroScript(canvasId, config) {
     var canvas = document.getElementById(canvasId);
     var ctx = canvas.getContext('2d');
     var particles = [];
     var animationId;
     var intervalId;
+    var defaultConfig = {
+      particleSize: 5,
+      particleSpeed: 3,
+      colors: ['red', 'green', 'blue', 'yellow', 'purple', 'orange'],
+      randomColors: true
+    };
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    // Merge user-provided config with default config
+    config = Object.assign({}, defaultConfig, config);
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
 
     function Particle(x, y) {
       this.x = x;
       this.y = y;
-      this.size = Math.random() * 5 + 1;
-      this.speedX = Math.random() * 6 - 3;
-      this.speedY = Math.random() * 6 - 3;
-      this.color = 'hsl(' + Math.random() * 360 + ', 100%, 50%)';
+      this.size = Math.random() * config.particleSize + 1;
+      this.speedX = Math.random() * (config.particleSpeed * 2) - config.particleSpeed;
+      this.speedY = Math.random() * (config.particleSpeed * 2) - config.particleSpeed;
+      this.color = getRandomColor();
+    }
+
+    function getRandomColor() {
+      if (config.randomColors) {
+        return config.colors[Math.floor(Math.random() * config.colors.length)];
+      } else {
+        return config.colors[0];
+      }
     }
 
     Particle.prototype.update = function() {
@@ -41,14 +60,14 @@
     function createParticle(e) {
       var xPos = e.x || Math.random() * canvas.width;
       var yPos = e.y || Math.random() * canvas.height;
-      for (var i=0; i<5; i++) {
+      for (var i = 0; i < 5; i++) {
         particles.push(new Particle(xPos, yPos));
       }
     }
 
     function animateParticles() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (var i=0; i<particles.length; i++) {
+      for (var i = 0; i < particles.length; i++) {
         particles[i].update();
         particles[i].draw();
 
@@ -61,9 +80,11 @@
     }
 
     this.start = function() {
+      resizeCanvas(); // Ensure canvas size matches window size
+      window.addEventListener('resize', resizeCanvas);
       canvas.addEventListener('mousemove', createParticle);
       animateParticles();
-      
+
       // Add random fireworks every 1-3 seconds
       intervalId = setInterval(function() {
         createParticle({});
@@ -71,6 +92,7 @@
     }
 
     this.stop = function() {
+      window.removeEventListener('resize', resizeCanvas);
       canvas.removeEventListener('mousemove', createParticle);
       cancelAnimationFrame(animationId);
       clearInterval(intervalId);
